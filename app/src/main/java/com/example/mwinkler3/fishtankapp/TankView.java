@@ -25,6 +25,8 @@ public class TankView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Bitmap backgroundBitmap;
 
+    private FishFood fishFood;
+
     // touch location for the dave
     private float touchX, touchY;
 
@@ -82,10 +84,11 @@ public class TankView extends SurfaceView implements SurfaceHolder.Callback {
     // touch events
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // remember the last touch point
-        touchX = event.getX();
-        touchY = event.getY();
-
+        //ensures that only one fish food exists at a time
+        //TODO - make it possible for more than one fishfood to exist at a time
+        if (fishFood == null) {
+            fishFood = new FishFood(context, event.getX(), event.getY());
+        }
         return true;
     }
 
@@ -95,8 +98,13 @@ public class TankView extends SurfaceView implements SurfaceHolder.Callback {
         private boolean isRunning = false;
         private long lastTime;
 
-        // the dave sprite
+        private float[] foodCoordinates = new float[2];
+
+        // the fish sprite
         private Fish fish;
+
+        // the fish food sprite
+        private FishFood fishFood;
 
         // frames per second calculation
         private int frames;
@@ -167,7 +175,8 @@ public class TankView extends SurfaceView implements SurfaceHolder.Callback {
 
         // move all objects in the game
         private void doUpdate(double elapsed) {
-            fish.doUpdate(elapsed, touchX, touchY);
+            foodCoordinates = fishFood.doUpdate(elapsed);
+            fish.doUpdate(elapsed, foodCoordinates[0], foodCoordinates[1]);
         }
 
         // draw all objects in the game
@@ -177,6 +186,7 @@ public class TankView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawColor(Color.argb(255, 126, 192, 238));
 
             fish.doDraw(canvas);
+            fishFood.doDraw(canvas);
         }
     }
 }

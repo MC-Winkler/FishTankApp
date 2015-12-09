@@ -34,10 +34,25 @@ public class Fish {
     //starting frame
     private int frame = 0;
 
+    private Context context;
+
     public Fish(Context context) {
 
+        this.context = context;
+
         // get the image - fish initially faces right
-        bitmap = BitmapFactory.decodeResource(context.getResources(), MainActivity.fishId);
+        if(MainActivity.fishColor.equals("Green")) {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.green_swim_right);
+        }
+        else if (MainActivity.fishColor.equals("Yellow")) {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.yellow_swim_right);
+        }
+        else if (MainActivity.fishColor.equals("Orange")) {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.gold_swim_right);
+        }
+        else {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.tuna_swim_right);
+        }
 
         // frameWidthScaled/frameHeightScaled of a single frame (scaled)
         frameWidthScaled = (bitmap.getWidth() / numFramesInSpriteSheet) * SCALE;
@@ -75,63 +90,63 @@ public class Fish {
     }
 
     private final double STEP = 0.25;       // time (in s) between animation steps
-    private final double ANIM_TIME = 5.0;   // how long to do one type of animation
     double step = 0.0;                      // timer for next animation step
-    double timer = 0.0;                     // timer for next type of animation
 
     // what can our sprite do?
-    private enum State { WALKING, JUMPING, FALLING };
-    private State state = State.WALKING;    // start in WALKING state
-    private int [] walking = {0, 1};        // walking = frame[0], frame[1], frame[0], ...
-    private int [] jumping = {2, 3};        // jumping = frame[2], frame[3], frame[2], ...
-    private int [] falling = {4, 5};        // falling = frame[4], frame[5], frame[4], ...
     private int which = 0;  // which index in a particular animation
 
-    public void doUpdate(double elapsed, float touchX ,float touchY) {
+    public void doUpdate(double elapsed, float foodX ,float foodY) {
 
-        timer = timer + elapsed;        // how much time has elapsed?
-        if (timer > ANIM_TIME) {        // time to switch animations
-            if (state == State.WALKING) {
-                state = State.JUMPING;
-            } else if (state == State.JUMPING) {
-                state = State.FALLING;
-            } else {
-                state = State.WALKING;
-            }
+        //make the fish change the direction it's facing depending on
+        //which way it's swimming
+        if(MainActivity.fishColor.equals("Green")){
+            if ((foodX - x > 0))
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.green_swim_right);
 
-            timer = 0.0;                // reset timer
+            else
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.green_swim_left);
+
         }
+        else if (MainActivity.fishColor.equals("Yellow")){
+            if ((foodX - x > 0))
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.yellow_swim_right);
+
+            else
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.yellow_swim_left);
+        }
+        else if (MainActivity.fishColor.equals("Orange")){
+            if ((foodX - x > 0))
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.gold_swim_right);
+
+            else
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.gold_swim_left);
+        }
+        else {
+            if ((foodX - x > 0))
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.tuna_swim_right);
+
+            else
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.tuna_swim_left);
+        }
+
 
         step = step + elapsed;          // how much time has elapsed?
         if (step > STEP) {              // time to move to the next frame in the animation
-            if (state == State.WALKING) {
-                which = (which + 1) % walking.length;
-                frame = walking[which];
+            if (frame > 4){
+                frame = 0;
             }
-
-            if (state == State.JUMPING) {
-                which = (which + 1) % jumping.length;
-                frame = jumping[which];
-            }
-
-            if (state == State.FALLING) {
-                which = (which + 1) % falling.length;
-                frame = falling[which];
+            else{
+                step++;
             }
 
             step = 0.0;                 // reset timer
         }
 
+        x = (float) (x + ((foodX - x) * elapsed *2));
+        y = (float) (y + ((foodY - y) * elapsed * 2));
+
+
     }
 
-    /*public void doUpdate(double elapsed, float touchX ,float touchY) {
-
-
-
-        //old update code
-        // easing based on touch point
-        // x = (float) (x + ((touchX - x) * elapsed *2));
-        //y = (float) (y + ((touchY - y) * elapsed * 2));
-    }*/
 
 }

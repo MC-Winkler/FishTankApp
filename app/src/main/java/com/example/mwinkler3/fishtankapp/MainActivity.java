@@ -13,7 +13,7 @@ public class MainActivity extends Activity {
     int otherId;
     int id;
     public static int background;
-    public static int fishId;
+    public static String fishColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +48,19 @@ public class MainActivity extends Activity {
         otherId = secondRadioGroup.getCheckedRadioButtonId();
         switch(otherId) {
             case R.id.one_fish:
-                fishId = R.drawable.yellow_swim_right;
+                fishColor = "Yellow";
                 break;
 
             case R.id.two_fish:
-                fishId = R.drawable.green_swim_right;
+                fishColor = "Green";
                 break;
 
             case R.id.orange_fish:
-                fishId = R.drawable.gold_swim_right;
+                fishColor="Orange";
                 break;
 
             case R.id.blue_fish:
-                fishId = R.drawable.tuna_swim_right;
+                fishColor="blue";
                 break;
         }
     }
